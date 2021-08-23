@@ -51,7 +51,15 @@ def main():
     # print('Created document with title: {0}'.format(
     #     doc.get('title')))
 
-    text1 = "halomas1"
+    title = 'test api'
+    body = {
+        'title': title
+    }
+    doc = service.documents().create(body=body).execute()
+    docId = doc.get('documentId')
+    print('Id of new Document is : ' + docId)
+
+    text1 = "monitoring ip 10.10.10.10"
     text2 = "halomas2"
     text3 = "halomas3"
     requests = [
@@ -70,7 +78,36 @@ def main():
     ]
 
     result = service.documents().batchUpdate(
-        documentId=DOCUMENT_ID, body={'requests': requests}).execute()
+        documentId=docId, body={'requests': requests}).execute()
+
+    requests = [{
+        'insertInlineImage': {
+            'location': {
+                'index': 9
+            },
+            'uri':
+            'https://fonts.gstatic.com/s/i/productlogos/docs_2020q4/v6/web-64dp/logo_docs_2020q4_color_1x_web_64dp.png',
+            'objectSize': {
+                'height': {
+                    'magnitude': 200,
+                    'unit': 'PT'
+                },
+                'width': {
+                    'magnitude': 200,
+                    'unit': 'PT'
+                }
+            }
+        }
+    }]
+
+    # Execute the request.
+    body = {'requests': requests}
+    response = service.documents().batchUpdate(
+        documentId=docId, body=body).execute()
+    insert_inline_image_response = response.get('replies')[0].get(
+        'insertInlineImage')
+    print('Inserted image with object ID: {0}'.format(
+        insert_inline_image_response.get('objectId')))
 
 
 if __name__ == '__main__':
