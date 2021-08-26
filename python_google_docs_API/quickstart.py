@@ -51,7 +51,7 @@ def main():
     # print('Created document with title: {0}'.format(
     #     doc.get('title')))
 
-    title = 'test api'
+    title = 'berapi api'
     body = {
         'title': title
     }
@@ -80,13 +80,22 @@ def main():
     result = service.documents().batchUpdate(
         documentId=docId, body={'requests': requests}).execute()
 
+    document = service.documents().get(documentId=docId).execute()
+
+    body = document['body']
+    content = body['content']
+    temp = content[len(content)-1]
+    endIndex = temp['endIndex']
+    realEndindex = endIndex - 1
+    print('end index : ', endIndex)
+
     requests = [{
         'insertInlineImage': {
             'location': {
-                'index': 9
+                'index': realEndindex
             },
             'uri':
-            'https://fonts.gstatic.com/s/i/productlogos/docs_2020q4/v6/web-64dp/logo_docs_2020q4_color_1x_web_64dp.png',
+            'http://10.10.200.202/images/sepatu.jpg',
             'objectSize': {
                 'height': {
                     'magnitude': 200,
